@@ -1,8 +1,8 @@
 # Building a REST API with Spring Boot
- - This is a demo example family cash card service application, 
- - Built as part of lab exercises of spring academy course 'Building REST endpoint using Spring boot'.
+ - Family cash card endpoint is an example of RESTFul service, built with spring boot
+ - This repository includes lab exercises of spring academy course 'Building REST endpoint using Spring boot'
 
 ## Pre-requisite:
- - built using JDK 17
- - uses gradle 8.14.3 as build tool
+ - JDK 17
+ - build tool gradle 8.14.3
  
