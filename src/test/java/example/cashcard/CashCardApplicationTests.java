@@ -14,10 +14,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.annotation.DirtiesContext.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CashCardApplicationTests {
 
 	@Autowired
@@ -36,6 +34,9 @@ class CashCardApplicationTests {
 
 		Double amount = documentContext.read("$.amount");
 		assertThat(amount).isEqualTo(123.45);
+
+		String owner = documentContext.read("$.owner");
+		assertThat(owner).isEqualTo("sarah1");
 	}
 
 	@Test
@@ -49,7 +50,7 @@ class CashCardApplicationTests {
 	@Test
 	@DirtiesContext
 	void shouldCreateANewCashCard() {
-		CashCard newCashCard = new CashCard(null, 250.00);
+		CashCard newCashCard = new CashCard(null, 250.00, "sarah1");
 		ResponseEntity<Void> createResponse = restTemplate.postForEntity("/cashcards", newCashCard, Void.class);
 		assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -60,9 +61,11 @@ class CashCardApplicationTests {
 		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
 		Number id = documentContext.read("$.id");
 		Double amount = documentContext.read("$.amount");
+		String owner = documentContext.read("$.owner");
 
 		assertThat(id).isNotNull();
 		assertThat(amount).isEqualTo(250.00);
+		assertThat(owner).isEqualTo("sarah1");
 	}
 
 	@Test
@@ -79,6 +82,9 @@ class CashCardApplicationTests {
 
 		JSONArray amounts = documentContext.read("$..amount");
 		assertThat(amounts).containsExactlyInAnyOrder(123.45, 1.00, 150.00);
+
+		JSONArray owners = documentContext.read("$..owner");
+		assertThat(owners).containsExactlyInAnyOrder("sarah1", "sarah1", "sarah1");
 	}
 
 	@Test
