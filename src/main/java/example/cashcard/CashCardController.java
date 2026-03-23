@@ -31,17 +31,6 @@ public class CashCardController {
         }
     }
 
-    @PostMapping
-    private ResponseEntity<Void> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, Principal principal) {
-        CashCard cashCardWithOwner = new CashCard(null, newCashCardRequest.amount(), principal.getName());
-        CashCard savedCashCard = cashCardRepository.save(cashCardWithOwner);
-        URI locationOfNewCashCard = ucb
-                .path("cashcards/{id}")
-                .buildAndExpand(savedCashCard.id())
-                .toUri();
-        return ResponseEntity.created(locationOfNewCashCard).build();
-    }
-
     @GetMapping
     private ResponseEntity<List<CashCard>> findAll(Pageable pageable, Principal principal) {
         Page<CashCard> page = cashCardRepository.findByOwner(principal.getName(),
@@ -52,6 +41,17 @@ public class CashCardController {
                 )
         );
         return ResponseEntity.ok(page.getContent());
+    }
+
+    @PostMapping
+    private ResponseEntity<Void> createCashCard(@RequestBody CashCard newCashCardRequest, UriComponentsBuilder ucb, Principal principal) {
+        CashCard cashCardWithOwner = new CashCard(null, newCashCardRequest.amount(), principal.getName());
+        CashCard savedCashCard = cashCardRepository.save(cashCardWithOwner);
+        URI locationOfNewCashCard = ucb
+                .path("cashcards/{id}")
+                .buildAndExpand(savedCashCard.id())
+                .toUri();
+        return ResponseEntity.created(locationOfNewCashCard).build();
     }
 
     @PutMapping("/{requestedId}")
